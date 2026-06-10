@@ -1,4 +1,4 @@
-package software.examples.spool.boe;
+package software.examples.spool.synthea;
 
 import software.spool.dsl.SpoolNodeDSL;
 import software.spool.runtime.OpenTelemetryConfiguration;
