@@ -1,4 +1,6 @@
 infrastructure:
+  watchdog: "http://host.docker.internal:8090"
+
   eventBus:
     type: IN_MEMORY
 
@@ -15,27 +17,27 @@ infrastructure:
 modules:
   - crawler:
       type: POLL
-      id: boe-crawler
+      id: synthea-crawler
       source:
         type: HTTP
         configuration:
-          sourceId: boe
-          url: "https://boe.es/datosabiertos/api/boe/sumario/20260601"
-          scheduleMilliseconds: 0
-        rootPath: data.sumario.diario.0.items
-        mediaType: BOE_JSON_ARRAY
+          sourceId: synthea-api
+          url: "http://plytrox.com:8000/events?limit=20"
+          scheduleMilliseconds: 60000
+        mediaType: JSON_ARRAY
+        rootPath: events
       eventMapping:
         namingConvention: SNAKE_CASE
-        domainMappingList:
-          - BoeItem
+        attributeList:
+          - _type
 
   - ingester:
-      id: boe-ingester
+      id: synthea-ingester
       type: REACTIVE
 
   - janitor:
-      id: boe-janitor
+      id: synthea-janitor
       configuration:
-        milliseconds: 1000
+        milliseconds: 60000
         millisecondsThreshold: 10000
-        millisecondsTTL: 100000
+        millisecondsTTL: 30000
